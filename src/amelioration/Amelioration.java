@@ -5,6 +5,7 @@ public class Amelioration {
     int clicParSec=0;
     int dps=0;
     int pourcentRabais=0;
+    int nombreClic=0;
 
     public int getCost() { return cost; }
     public void setCost(int cost) { this.cost = cost; }
@@ -14,4 +15,6 @@ public class Amelioration {
     public void setDps(int dps) { this.dps = dps; }
     public int getPourcentRabais() { return pourcentRabais; }
     public void setPourcentRabais(int pourcentRabais) { this.pourcentRabais = pourcentRabais; }
+    public int getNombreClic() { return nombreClic; }
+    public void setNombreClic(int nombreClic) { this.nombreClic = nombreClic; }
 }
