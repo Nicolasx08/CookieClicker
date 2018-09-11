@@ -10,10 +10,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
