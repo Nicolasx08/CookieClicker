@@ -185,7 +185,7 @@ public int augmenterBouton(int point,Button gold2){
             nombreClicArgent.setNombreClic(nombreClicArgent.getNombreClic()+50);
             gold=false;
         }else {
-            point=point+(100*doubleClick.getClicParSec());
+            point=point+(1*doubleClick.getClicParSec());
 
 
 
