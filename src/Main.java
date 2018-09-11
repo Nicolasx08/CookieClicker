@@ -6,11 +6,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.swing.text.html.ImageView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
@@ -25,6 +24,7 @@ public class Main extends Application {
     public static Amelioration clicAutomatique= new ClicAuto();
     public static Amelioration nombreClicArgent= new Argent();
     public static Label points = new Label("0");
+    public static Amelioration cookie= new Surprise();
 
     public void start(Stage stage){
 
@@ -32,8 +32,6 @@ public class Main extends Application {
         stage.setWidth(700);
         stage.setTitle("Cookie Clicker");
         stage.setResizable(false);
-
-
 
         Label text= new Label("Nombre de cookies:");
         text.setTranslateX(400);
@@ -64,10 +62,9 @@ public class Main extends Application {
         rab.setTranslateY(100);
 
         Button bouton= new Button("Cookie");
-        bouton.setScaleX(2.5);
-        bouton.setScaleY(1.8);
-        bouton.setTranslateX(325);
-        bouton.setTranslateY(450);
+        bouton.setPrefSize(300,300);
+        bouton.setTranslateX(200);
+        bouton.setTranslateY(350);
 
         Button click2=  new Button("Double click= "+doubleClick.getCost()+ " cookies");
         click2.setPrefSize(300,50);
@@ -75,7 +72,7 @@ public class Main extends Application {
         click2.setTranslateX(50);
         click2.setDisable(true);
 
-        Button autoclic = new Button("Clic auto = "+ (clicAutomatique.getDps()+1)+"/s   prix: "+clicAutomatique.getCost()+" cookies");
+        Button autoclic = new Button("Clic auto = "+ (clicAutomatique.getDps()+2)+"/s   prix: "+clicAutomatique.getCost()+" cookies");
         autoclic.setPrefSize(300,50);
         autoclic.setTranslateX(50);
         autoclic.setTranslateY(150);
@@ -87,14 +84,16 @@ public class Main extends Application {
         argent.setTranslateY(200);
         argent.setDisable(true);
 
-       /*final ImageView photo=new ImageView( new Image(Main.class.getResourceAsStream("Images.cookie.png")));*/
-
-
+        Button cookieBut = new Button("Surprise: "+ cookie.getCost()+ " cookies" );
+        cookieBut.setPrefSize(300,50);
+        cookieBut.setTranslateX(50);
+        cookieBut.setTranslateY(250);
+        cookieBut.setDisable(true);
 
         bouton.setOnAction((event)->{
                     point.set(augmenterBouton(point.get(),argent));
                     points.setText(Integer.toString(point.get()));
-                    checkup(click2,rab,autoclic,argent,point);
+                    checkup(click2,rab,autoclic,argent,point,cookieBut);
                 }
         );
 
@@ -102,48 +101,42 @@ public class Main extends Application {
             point.set(point.get()-doubleClick.getCost());
             points.setText(Integer.toString(point.get()));
             doubleClick.setClicParSec(doubleClick.getClicParSec()*2);
-            doubleClick.setCost((doubleClick.getCost()*6)+100);
+            doubleClick.setCost((doubleClick.getCost()*3)+100);
             click2.setText("Double clic= "+Integer.toString(doubleClick.getCost())+ " cookies");
-            checkup(click2,rab,autoclic,argent,point);
+            checkup(click2,rab,autoclic,argent,point,cookieBut);
         });
 
         rab.setOnAction((event)->{
 
-            if (rabais.getPourcentRabais()<20){
+
                 point.set(point.get()-rabais.getCost());
                 points.setText(Integer.toString(point.get()));
                 rabais.setCost((rabais.getCost()*2)+200);
-                rabais.setPourcentRabais(rabais.getPourcentRabais()*2);
                 doubleClick.setCost(doubleClick.getCost()-((doubleClick.getCost()*rabais.getPourcentRabais())/100));
                 clicAutomatique.setCost(clicAutomatique.getCost()-((clicAutomatique.getCost()*rabais.getPourcentRabais())/100));
                 nombreClicArgent.setCost(nombreClicArgent.getCost()-((nombreClicArgent.getCost()*rabais.getPourcentRabais())/100));
+                cookie.setCost(cookie.getCost()-((cookie.getCost()*rabais.getPourcentRabais())/100));
+                cookieBut.setText("Surprise: "+ cookie.getCost()+ " cookies");
                 autoclic.setText("Clic auto = "+ (clicAutomatique.getDps()+1)+"/s   prix: "+clicAutomatique.getCost()+" cookies");
                 click2.setText("Double clic= "+Integer.toString(doubleClick.getCost())+ "cookies");
-                if (nombreClicArgent.getCost()==400){
+                rabais.setPourcentRabais(rabais.getPourcentRabais()*2);
+                if (nombreClicArgent.getCost()==400 || nombreClicArgent.getCost()==380 || nombreClicArgent.getCost()==342 || nombreClicArgent.getCost()==274){
                     argent.setText("X clics for bonus: "+nombreClicArgent.getCost()+" cookies" );
                 }else {
                     argent.setText("Nombre de clic avant bonus: "+nombreClicArgent.getNombreClic()+" "+nombreClicArgent.getCost()+"$= + gros bonus");
                 }
 
                 rab.setText("Rabais= "+rabais.getPourcentRabais()+"%  prix= "+ Integer.toString(rabais.getCost())+ " cookies");
-                checkup(click2,rab,autoclic,argent,point);
-            }
-            else {
-                rab.setText("Maxed");
-                rab.setDisable(true);
-                rabais.setPourcentRabais(21);
-            }
-
-
+                checkup(click2,rab,autoclic,argent,point,cookieBut);
         });
 
         autoclic.setOnAction((event )->{
             point.set(point.get()-clicAutomatique.getCost());
             points.setText(Integer.toString(point.get()));
-            clicAutomatique.setCost(clicAutomatique.getCost()*3);
+            clicAutomatique.setCost(clicAutomatique.getCost()*2);
             clicAutomatique.setDps(clicAutomatique.getDps()+2);
             autoclic.setText("Clic auto = "+ (clicAutomatique.getDps()+2)+"/s   prix: "+clicAutomatique.getCost());
-            checkup(click2,rab,autoclic,argent,point);
+            checkup(click2,rab,autoclic,argent,point,cookieBut);
         });
 
         argent.setOnAction((event)->{
@@ -151,10 +144,24 @@ public class Main extends Application {
             points.setText(Integer.toString(point.get()));
             nombreClicArgent.setCost((int)(nombreClicArgent.getCost()*(2.5)));
             argent.setText("Nombre de clic avant bonus: "+nombreClicArgent.getNombreClic()+" "+nombreClicArgent.getCost()+"$= + gros bonus");
-            checkup(click2,rab,autoclic,argent,point);
+            checkup(click2,rab,autoclic,argent,point,cookieBut);
         });
 
-        Group root= new Group(points,bouton,text,rab,click2,autoclic,argent);
+        cookieBut.setOnAction((event)->{
+            point.set(point.get()-cookie.getCost());
+            points.setText(Integer.toString(point.get()));
+            cookie.setCost(cookie.getCost()*2);
+            cookieBut.setText("Maxed");
+            Image image = new Image("photo.png");
+            ImageView photo =new ImageView(image);
+            photo.setFitWidth(300);
+            photo.setFitHeight(300);
+            bouton.setGraphic(photo);
+            bouton.setText("");
+            checkup(click2,rab,autoclic,argent,point,cookieBut);
+        });
+
+        Group root= new Group(points,bouton,text,rab,click2,autoclic,argent,cookieBut);
 
 
 
@@ -182,17 +189,31 @@ public int augmenterBouton(int point,Button gold2){
             nombreClicArgent.setNombreClic(nombreClicArgent.getNombreClic()+50);
             gold=false;
         }else {
-            point=point+(1*doubleClick.getClicParSec());
-        }
+            point=point+(100*doubleClick.getClicParSec());
 
+
+
+            //Changer le 1 pour un autre chiffre pour tester le programme
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+        }
         return point;
 }
-public void checkup(Button clicX2,Button butRabais, Button butClicAuto, Button butArgent,AtomicInteger point){
-    if (point.get()>=rabais.getCost()){
-        butRabais.setDisable(false);
-    }
-    else {
+public void checkup(Button clicX2,Button butRabais, Button butClicAuto, Button butArgent,AtomicInteger point, Button butSurprise){
+        if (rabais.getPourcentRabais()>20){
+            butRabais.setText("Maxed");
+            butRabais.setDisable(true);
+        }
+        else if (point.get()<=rabais.getCost()){
         butRabais.setDisable(true);
+        }
+        else {
+        butRabais.setDisable(false);
     }
     if (point.get()>=doubleClick.getCost()){
         clicX2.setDisable(false);
@@ -211,6 +232,12 @@ public void checkup(Button clicX2,Button butRabais, Button butClicAuto, Button b
     }
     else{
         butArgent.setDisable(true);
+    }
+    if (point.get()< cookie.getCost() || cookie.getCost()>= 701){
+        butSurprise.setDisable(true);
+    }
+    else {
+        butSurprise.setDisable(false);
     }
 }
 }
